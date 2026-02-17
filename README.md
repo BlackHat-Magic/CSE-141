@@ -17,4 +17,6 @@ Then run the scanner on the file:
 java Scanner <path/to/your/file>.c
 ```
 
+The current working directory must be the directory that contains the `*.class` files.
+
 The scanner will output the processed file as `<file_name>_gen.c` in the same directory as the original file.
