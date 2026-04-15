@@ -1,0 +1,36 @@
+set positional-arguments
+
+test_dir := "./test"
+python := "python3"
+
+# List all available recipes
+default:
+    @just --list
+
+# Run all tests against expected output
+test:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    passed=0
+    failed=0
+    for expected in {{test_dir}}/*-out.txt; do
+        name=$(basename "$expected" -out.txt)
+        actual=$({{python}} gee.py "{{test_dir}}/${name}.gee" 2>/dev/null)
+        if [ "$actual" = "$(cat "$expected")" ]; then
+            echo "PASS: $name"
+            passed=$((passed+1))
+        else
+            echo "FAIL: $name"
+            failed=$((failed+1))
+        fi
+    done
+    echo ""
+    echo "Results: $passed passed, $failed failed"
+
+# Run parser on a single file
+run file:
+    {{python}} gee.py {{file}}
+
+# Run with debug output
+debug file:
+    {{python}} gee.py -d {{file}}
