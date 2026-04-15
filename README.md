@@ -77,3 +77,36 @@ just run <path/to/file>.c
 | Clean artifacts | `make clean` | `just clean` |
 | Clean + build | `make rebuild` | `just rebuild` |
 | List recipes | — | `just` |
+
+## Lab 03
+
+Recursive descent parser for the Gee language in Python 3. Outputs an abstract syntax tree in Polish prefix notation.
+
+### Run on a file
+
+```sh
+cd python
+python3 gee.py <path/to/file>.gee
+```
+
+### Test
+
+Using Make:
+
+```sh
+make test
+```
+
+Using just:
+
+```sh
+just test
+```
+
+### Other commands
+
+| Task | Make | Just |
+|------|------|------|
+| Run a file | — | `just run <file>` |
+| Run with debug | — | `just debug <file>` |
+| List recipes | — | `just` |
