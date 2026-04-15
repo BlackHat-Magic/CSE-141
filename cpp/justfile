@@ -1,0 +1,69 @@
+set positional-arguments
+
+src_dir := "./src"
+obj_dir := "./objects"
+bin_dir := "./bin"
+test_dir := "./test_dir"
+results_file := "./RESULTS.txt"
+binary := bin_dir + "/parser"
+
+# List all available recipes
+default:
+    @just --list
+
+# Build the parser (default)
+build:
+    mkdir -p {{obj_dir}} {{bin_dir}}
+    g++ -O3 -std=c++11 -I ./include -c {{src_dir}}/first_plus.cpp -o {{obj_dir}}/first_plus.o
+    g++ -O3 -std=c++11 -I ./include -c {{src_dir}}/parser.cpp -o {{obj_dir}}/parser.o
+    g++ -O3 -std=c++11 -I ./include -c {{src_dir}}/token.cpp -o {{obj_dir}}/token.o
+    g++ -O3 -std=c++11 -I ./include -c {{src_dir}}/scanner.cpp -o {{obj_dir}}/scanner.o
+    g++ -O3 -std=c++11 -I ./include -c {{src_dir}}/parse_main.cpp -o {{obj_dir}}/parse_main.o
+    g++ {{obj_dir}}/*.o -o {{binary}}
+
+# Build the parser with debug flags
+build-debug:
+    mkdir -p {{obj_dir}} {{bin_dir}}
+    g++ -O3 -std=c++11 -I ./include -DDEBUG -c {{src_dir}}/first_plus.cpp -o {{obj_dir}}/first_plus.o
+    g++ -O3 -std=c++11 -I ./include -DDEBUG -c {{src_dir}}/parser.cpp -o {{obj_dir}}/parser.o
+    g++ -O3 -std=c++11 -I ./include -DDEBUG -c {{src_dir}}/token.cpp -o {{obj_dir}}/token.o
+    g++ -O3 -std=c++11 -I ./include -DDEBUG -c {{src_dir}}/scanner.cpp -o {{obj_dir}}/scanner.o
+    g++ -O3 -std=c++11 -I ./include -DDEBUG -c {{src_dir}}/parse_main.cpp -o {{obj_dir}}/parse_main.o
+    g++ {{obj_dir}}/*.o -o {{binary}}
+
+# Remove all build artifacts
+clean:
+    rm -rf {{obj_dir}}/* {{bin_dir}}/*
+
+# Clean then build from scratch
+rebuild: clean build
+
+# Run parser on a single test file
+run file:
+    ./{{binary}} {{file}}
+
+# Run all tests against expected output
+test: build
+    #!/usr/bin/env bash
+    set -uo pipefail
+    passed=0
+    failed=0
+    for f in {{test_dir}}/*.c; do
+        name=$(basename "$f")
+        expected=$(grep -A1 "^${name}:" {{results_file}} | tail -1 | sed 's/^[[:space:]]*//') || true
+        actual=$(./{{binary}} "$f" 2>&1) || true
+        if [ "$expected" = "$actual" ]; then
+            echo "PASS: $name"
+            passed=$((passed+1))
+        else
+            echo "FAIL: $name"
+            echo "  Expected: $expected"
+            echo "  Got:      $actual"
+            failed=$((failed+1))
+        fi
+    done
+    echo ""
+    echo "Results: $passed passed, $failed failed"
+
+# Clean build then run all tests
+test-clean: rebuild test
