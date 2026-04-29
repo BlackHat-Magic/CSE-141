@@ -1,0 +1,23 @@
+set positional-arguments
+
+python := "python3"
+
+# List all available recipes
+default:
+    @just --list
+
+# Run all grading tests
+test:
+    {{python}} run_tests.py
+
+# Dump lowered IR to stdout
+dump-ir:
+    {{python}} main.py --dump-ir
+
+# Run the lowered IR through the interpreter
+run-ir:
+    {{python}} main.py --run-ir
+
+# Run with step-by-step trace
+trace-ir:
+    {{python}} main.py --trace-ir

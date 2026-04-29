@@ -110,3 +110,47 @@ just test
 | Run a file | — | `just run <file>` |
 | Run with debug | — | `just debug <file>` |
 | List recipes | — | `just` |
+
+## Lab 04
+
+AST-to-IR lowering pass that translates tree-structured program representations into a linear three-address intermediate representation (IR) executable by a provided interpreter.
+
+### Test
+
+Using Make:
+
+```sh
+make test
+```
+
+Using just:
+
+```sh
+just test
+```
+
+### Dump / Run / Trace IR
+
+```sh
+python3 main.py --dump-ir     # print lowered IR
+python3 main.py --run-ir      # execute IR via interpreter
+python3 main.py --trace-ir    # step-by-step trace
+```
+
+Or with just:
+
+```sh
+just dump-ir
+just run-ir
+just trace-ir
+```
+
+### Other commands
+
+| Task | Make | Just |
+|------|------|------|
+| Run tests | `make test` | `just test` |
+| Dump IR | `make dump-ir` | `just dump-ir` |
+| Run IR | `make run-ir` | `just run-ir` |
+| Trace IR | `make trace-ir` | `just trace-ir` |
+| List recipes | — | `just` |
